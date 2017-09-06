@@ -31,11 +31,7 @@ end
 
 def get_sum(grades)
   sum = 0
-  grades.each do |e|
-    unless e == 'A'
-      sum += e.to_i
-    end
-  end
+  grades.each { |e| sum += e.to_i unless e == 'A' }
   return sum
 end
 
@@ -44,32 +40,21 @@ def non_attendance
   students = []
   file.each { |line| students.push(line.split(', ').map(&:chomp)) }
   puts "\n"
-  students.each do |e|
-    puts "#{e[0]} tiene #{count_a(e)} inasistencias"
-  end
+  students.each { |e| puts "#{e[0]} tiene #{count_a(e)} inasistencias" }
 end
 
 def count_a(grades)
   sum = 0
-  grades.each do |e|
-    if e == 'A'
-      sum += 1
-    end
-  end
+  grades.each { |e| sum += 1 if e == 'A' }
   return sum
-end 
+end
 
-def approval_students
-  grade = 5
+def approval_students(grade = 5)
   file = File.open('students_average.csv', 'r').readlines.each(&:chomp)
   students = []
-  file.each {|line| students.push(line.split(', ').map(&:chomp))}
+  file.each { |line| students.push(line.split(', ').map(&:chomp)) }
   puts "\n"
-  students.each do |average|
-    if average[1].to_i >= grade
-      puts "#{average[0]} ha aprobado el curso"
-    end
-  end
+  students.each { |average| puts "#{average[0]} ha aprobado el curso" if average[1].to_f >= grade }
 end
 
 puts "\n"
@@ -84,22 +69,28 @@ while option != 4
   puts '2. Mostrar listado de inasistencias'
   puts '3. Ver alumnos aprobados'
   puts '4. Salir'
-  option = gets.chomp.to_i
+  option = gets.chomp.to_f
 
-  case option 
-    when 1
-      create_average
+  case option
+  when 1
+    create_average
 
-    when 2
-      non_attendance
+  when 2
+    non_attendance
 
-    when 3
+  when 3
+    puts "\n"
+    puts 'Ingrese nota de aprobación (si presiona entrar es 5)'
+    grade = gets.chomp.to_f
+    if grade.zero?
       approval_students
-		
-    when 4
-      puts 'Adios!'
-    
     else
-      puts 'Opción inválida, ingrese una opción correcta'
+      approval_students(grade)
     end
+
+  when 4
+    puts 'Adios!'
+  else
+    puts 'Opción inválida, ingrese una opción correcta'
+  end
 end
